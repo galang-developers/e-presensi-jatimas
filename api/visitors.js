@@ -153,7 +153,9 @@ export default async function handler(req, res) {
       console.error('visitor_formatting_failed', { code: String(formatError?.code || ''), status: Number(formatError?.response?.status || 0) });
     }
     if (key) recentRequests.set(key, { status: 'done', expiresAt: Date.now() + 10 * 60_000 });
-    return send(res, 201, { success: true });
+    const savedRange = appended.data?.updates?.updatedRange || `${sheetName}!A${sheetRow}:G${sheetRow}`;
+    console.info('visitor_saved', { sheetName, savedRange, nomor });
+    return send(res, 201, { success: true, savedRange, nomor });
   } catch (error) {
     if (key) recentRequests.delete(key);
     const status = Number(error?.response?.status || error?.response?.data?.error?.code || (Number(error?.code) || 0));
