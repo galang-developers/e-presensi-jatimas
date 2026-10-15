@@ -6,6 +6,19 @@ const recentRequests = new Map();
 const requestTimes = new Map();
 const MAX_BODY_BYTES = 8 * 1024;
 
+// Warna dalam format hex {red, green, blue} dengan skala 0-255 → dikonversi ke 0-1
+function hex(color) {
+  const r = ((color >> 16) & 0xff) / 255;
+  const g = ((color >> 8) & 0xff) / 255;
+  const b = (color & 0xff) / 255;
+  return { red: r, green: g, blue: b };
+}
+
+const COLOR_HEADER_BG = hex(0x145C45);   // hijau tua
+const COLOR_HEADER_FG = hex(0xFFFFFF);   // putih
+const COLOR_ROW_BG = hex(0xFFFFFF);      // putih
+const COLOR_ROW_FG = hex(0x111111);      // hitam (bukan putih!)
+
 function jakartaTimestamp(now = new Date()) {
   const dateParts = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).formatToParts(now);
   const part = (type) => dateParts.find((item) => item.type === type)?.value || '';
@@ -97,8 +110,6 @@ export default async function handler(req, res) {
     step = 'read_headers';
     const headerResponse = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${title}!A1:G1` });
     const configuredHeaders = headerResponse.data?.values?.[0] || [];
-    // The first column is commonly labeled "NO" in existing guest books;
-    // accept it as an alias for the canonical "Nomor" header.
     const headersMatch = HEADERS.every((header, index) => {
       const actual = String(configuredHeaders[index] || '').trim().toLocaleLowerCase('id-ID');
       if (index === 0) return ['nomor', 'no'].includes(actual);
@@ -127,31 +138,74 @@ export default async function handler(req, res) {
       valueInputOption: 'RAW',
       requestBody: { majorDimension: 'ROWS', values: [[nomor]] },
     });
-    // Keep the header green and all used table cells below it white. Formatting
-    // is best-effort; a formatting failure must not turn a saved visit into a failure.
+
+    // === FORMAT: paksa hitam di putih untuk baris data, putih di hijau untuk header ===
+    // Formatting is best-effort; a formatting failure must not turn a saved visit into a failure.
     try {
       await sheets.spreadsheets.batchUpdate({
         spreadsheetId,
-        requestBody: { requests: [
-          {
-            repeatCell: {
-              range: { sheetId: sheet.properties.sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 7 },
-              cell: { userEnteredFormat: { backgroundColor: { red: 0.0784, green: 0.3608, blue: 0.2706 }, textFormat: { foregroundColor: { red: 1, green: 1, blue: 1 }, bold: true } } },
-              fields: 'userEnteredFormat.backgroundColor,userEnteredFormat.textFormat.foregroundColor,userEnteredFormat.textFormat.bold',
+        requestBody: {
+          requests: [
+            // Header (baris 1) — background hijau, teks putih, bold, center
+            {
+              repeatCell: {
+                range: { sheetId: sheet.properties.sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: 7 },
+                cell: {
+                  userEnteredFormat: {
+                    backgroundColor: COLOR_HEADER_BG,
+                    textFormat: { foregroundColor: COLOR_HEADER_FG, bold: true },
+                    horizontalAlignment: 'CENTER',
+                    verticalAlignment: 'MIDDLE',
+                  },
+                },
+                fields: 'userEnteredFormat.backgroundColor,userEnteredFormat.textFormat,userEnteredFormat.horizontalAlignment,userEnteredFormat.verticalAlignment',
+              },
             },
-          },
-          {
-            repeatCell: {
-              range: { sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: sheetRow, startColumnIndex: 0, endColumnIndex: 7 },
-              cell: { userEnteredFormat: { backgroundColor: { red: 1, green: 1, blue: 1 } } },
-              fields: 'userEnteredFormat.backgroundColor',
+            // Baris data (2 s/d sheetRow) — background putih, teks HITAM
+            {
+              repeatCell: {
+                range: { sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: sheetRow, startColumnIndex: 0, endColumnIndex: 7 },
+                cell: {
+                  userEnteredFormat: {
+                    backgroundColor: COLOR_ROW_BG,
+                    textFormat: { foregroundColor: COLOR_ROW_FG },
+                    verticalAlignment: 'MIDDLE',
+                  },
+                },
+                fields: 'userEnteredFormat.backgroundColor,userEnteredFormat.textFormat,userEnteredFormat.verticalAlignment',
+              },
             },
-          },
-        ] },
+            // Kolom A (Nomor) pakai format TEXT biar tidak auto-jadi angka/putih
+            {
+              repeatCell: {
+                range: { sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: sheetRow, startColumnIndex: 0, endColumnIndex: 1 },
+                cell: { userEnteredFormat: { numberFormat: { type: 'TEXT' } } },
+                fields: 'userEnteredFormat.numberFormat',
+              },
+            },
+            // Kolom B, C (Hari/Tanggal, Jam Masuk) — rata kiri
+            {
+              repeatCell: {
+                range: { sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: sheetRow, startColumnIndex: 1, endColumnIndex: 3 },
+                cell: { userEnteredFormat: { horizontalAlignment: 'LEFT' } },
+                fields: 'userEnteredFormat.horizontalAlignment',
+              },
+            },
+            // Kolom G (Tujuan) — wrap text biar tidak overflow
+            {
+              repeatCell: {
+                range: { sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: sheetRow, startColumnIndex: 6, endColumnIndex: 7 },
+                cell: { userEnteredFormat: { wrapStrategy: 'WRAP' } },
+                fields: 'userEnteredFormat.wrapStrategy',
+              },
+            },
+          ],
+        },
       });
     } catch (formatError) {
       console.error('visitor_formatting_failed', { code: String(formatError?.code || ''), status: Number(formatError?.response?.status || 0) });
     }
+
     if (key) recentRequests.set(key, { status: 'done', expiresAt: Date.now() + 10 * 60_000 });
     const savedRange = appended.data?.updates?.updatedRange || `${sheetName}!A${sheetRow}:G${sheetRow}`;
     console.info('visitor_saved', { sheetName, savedRange, nomor });
@@ -161,7 +215,6 @@ export default async function handler(req, res) {
     const status = Number(error?.response?.status || error?.response?.data?.error?.code || (Number(error?.code) || 0));
     const reason = error?.response?.data?.error?.errors?.[0]?.reason || error?.response?.data?.error?.status || '';
     const code = error?.code;
-    // Keep Vercel logs useful while excluding credentials and visitor data.
     console.error('visitor_save_failed', { step, code: String(code || ''), status, reason: String(reason) });
     if (error?.message === 'SHEET_HEADERS') return send(res, 503, { error: 'Susunan header Google Sheets belum sesuai. Pastikan kolom A sampai G berurutan: NO atau Nomor, Hari/Tanggal, Jam Masuk, Nama Lengkap, Jabatan, Asal Instansi, Tujuan Kunjungan.' });
     if (error?.message === 'SHEET_NOT_FOUND') return send(res, 503, { error: `Worksheet "${process.env.GOOGLE_SHEETS_SHEET_NAME || 'Buku Tamu'}" tidak ditemukan. Periksa nama tab pada spreadsheet.` });
