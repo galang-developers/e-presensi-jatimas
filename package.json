@@ -1,0 +1,15 @@
+{
+  "name": "e-presensi-jati-mas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n API,VITE \"node server/local.js\" \"vite\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server/local.js"
+  },
+  "dependencies": { "dotenv": "^16.4.7", "express": "^4.21.2", "googleapis": "^144.0.0", "qrcode": "^1.5.4", "react": "^18.3.1", "react-dom": "^18.3.1" },
+  "devDependencies": { "@vitejs/plugin-react": "^4.3.4", "concurrently": "^9.1.2", "vite": "^6.0.5" },
+  "engines": { "node": ">=20" }
+}
