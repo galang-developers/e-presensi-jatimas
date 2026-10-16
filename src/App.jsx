@@ -24,7 +24,7 @@ export default function App() {
           <div className="main-content">{submitted ? <SuccessMessage onAgain={() => setSubmitted(false)} /> : <VisitorForm onSuccess={() => setSubmitted(true)} />}</div>
         </div>
       </main>
-      <footer><span>© {new Date().getFullYear()} PKBM Jati Mas</span></footer>
+      <footer className="visitor-footer"><span>© {new Date().getFullYear()} PKBM Jati Mas</span></footer>
     </div>
   );
 }

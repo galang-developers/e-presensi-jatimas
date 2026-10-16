@@ -42,6 +42,7 @@ export default function VisitorForm({ onSuccess }) {
   const [photoBusy, setPhotoBusy] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState('');
+  const [mirrorCamera, setMirrorCamera] = useState(false);
   const submissionKey = useRef(crypto.randomUUID());
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -175,7 +176,7 @@ export default function VisitorForm({ onSuccess }) {
         {busy && <span className="spinner" aria-hidden="true" />}{busy ? 'Menyimpan data…' : 'SIMPAN BUKU TAMU'}
       </button>
       <p className="privacy-note"><span aria-hidden="true">●</span> Foto dan data kunjungan hanya digunakan untuk administrasi PKBM Jati Mas.</p>
-      {cameraOpen && <div className="camera-modal" role="presentation" onClick={closeCamera}><section className="camera-dialog" role="dialog" aria-modal="true" aria-label="Ambil selfie" onClick={(event) => event.stopPropagation()}><div className="camera-dialog-heading"><strong>Ambil Selfie</strong><button type="button" className="modal-close" onClick={closeCamera} aria-label="Tutup kamera">×</button></div><video ref={videoRef} autoPlay muted playsInline />{cameraError && <p className="field-error" role="alert">{cameraError}</p>}<div className="camera-dialog-actions"><button className="button button-secondary" type="button" onClick={closeCamera}>Batal</button><button className="button button-primary" type="button" onClick={captureCamera}>Ambil Foto</button></div></section></div>}
+      {cameraOpen && <div className="camera-modal" role="presentation" onClick={closeCamera}><section className="camera-dialog" role="dialog" aria-modal="true" aria-label="Ambil selfie" onClick={(event) => event.stopPropagation()}><div className="camera-dialog-heading"><strong>Ambil Selfie</strong><label className="mirror-toggle"><input type="checkbox" checked={mirrorCamera} onChange={(event) => setMirrorCamera(event.target.checked)} /><span>Cerminkan pratinjau</span><span className="mirror-state">{mirrorCamera ? 'Aktif' : 'Nonaktif'}</span></label></div><video className={mirrorCamera ? 'camera-preview-mirrored' : ''} ref={videoRef} autoPlay muted playsInline />{cameraError && <p className="field-error" role="alert">{cameraError}</p>}<div className="camera-dialog-actions"><button className="button button-secondary" type="button" onClick={closeCamera}>Batal</button><button className="button button-primary" type="button" onClick={captureCamera}>Ambil Foto</button></div></section></div>}
     </form>
   );
 }
