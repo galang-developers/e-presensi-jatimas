@@ -1,6 +1,6 @@
 # E-Presensi Jati Mas
 
-Buku tamu digital PKBM Jati Mas. Pengunjung mengisi nama, tempat dan tanggal lahir, jabatan, instansi, tujuan kunjungan, serta selfie melalui kamera atau unggah foto. Pengelola masuk ke `/admin` untuk melihat kunjungan dan mengunduh rekap Excel.
+Buku tamu digital PKBM Jati Mas. Pengunjung mengisi nama, tempat dan tanggal lahir, jabatan, instansi, tujuan kunjungan, serta selfie melalui kamera atau unggah foto. Pengelola masuk ke `/admin` untuk melihat kunjungan, mencetak sertifikat memakai template `sertif.html`, dan mengunduh rekap Excel.
 
 Google Sheets, Google Drive, QR Code, dan tanda tangan digital sudah dihapus. Data kunjungan disimpan di PostgreSQL (Neon melalui Vercel Marketplace), sementara foto selfie berada di Vercel Blob dengan akses private. Penyimpanan browser dan filesystem sementara Vercel tidak digunakan sebagai database. Vercel menyediakan integrasi marketplace untuk database Postgres dan Vercel Blob untuk file saat aplikasi berjalan ([Vercel Storage](https://vercel.com/docs/storage), [Vercel Blob private storage](https://vercel.com/docs/vercel-blob/private-storage)).
 
@@ -30,6 +30,7 @@ Tabel `visitor_records` dibuat otomatis oleh backend ketika request pertama dite
 - Username, password, dan secret sesi disimpan sebagai environment variables server. Akun admin tidak disimpan dalam tabel database. Untuk mengganti akses admin, ubah variabel Vercel lalu redeploy.
 - Selfie dapat diambil langsung lewat kamera atau dipilih melalui unggah foto, dikecilkan di browser, divalidasi lagi di server, lalu diunggah ke Blob private. Akses kamera memerlukan HTTPS pada deployment (atau localhost saat pengembangan). Endpoint foto memeriksa sesi admin sebelum mengirim file.
 - Ekspor mengunduh file Excel `.xls` berisi Nomor, Hari/Tanggal, Jam Masuk, Nama Lengkap, Tempat/Tanggal Lahir, Jabatan, Asal Instansi, dan Tujuan Kunjungan. Path selfie dan foto tidak disertakan.
+- Tombol **Cetak Sertifikat** membuka file `sertif.html` yang diberikan tanpa mengubah desainnya, menyembunyikan panel pengaturannya, lalu mengisi data pengunjung terpilih pada nama, tempat/tanggal lahir, instansi, jabatan, nomor buku tamu, serta foto selfie. Template dan aset disajikan lewat endpoint yang memerlukan login admin.
 - Rate limit login dan form berjalan best-effort per instance. Untuk pencegahan spam yang konsisten pada trafik besar, tambahkan rate limiter terdistribusi.
 - Tidak ada endpoint untuk menghapus catatan dari dashboard. Untuk pengelolaan retensi dan penghapusan, gunakan console database dan Blob sesuai kebijakan lembaga.
 

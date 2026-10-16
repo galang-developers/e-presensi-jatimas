@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifikat Resmi - Desain Mewah</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        html, body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* ===== HAPUS SEMUA SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ===== TOGGLE PANEL BUTTON ===== */
+        .panel-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c9a84c, #a88832);
+            color: #1a3a2e;
+            border: 2px solid #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(201,168,76,0.5);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .panel-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(201,168,76,0.7);
+        }
+
+        .panel-toggle svg { width: 22px; height: 22px; }
+
+        /* ===== PANEL KONTROL ===== */
+        .control-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1f1f1f 0%, #2a2a2a 100%);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.5);
+            border-left: 2px solid rgba(201,168,76,0.4);
+            z-index: 1000;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+
+        .control-panel.open { right: 0; }
+
+        .panel-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #1a3a2e, #0f2419);
+            border-bottom: 2px solid rgba(201,168,76,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .panel-title {
+            color: #c9a84c;
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .panel-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1.5px solid #c9a84c;
+            color: #c9a84c;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.25s ease;
+        }
+
+        .panel-close:hover {
+            background: #c9a84c;
+            color: #1a3a2e;
+            transform: rotate(90deg);
+        }
+
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px 110px 24px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed rgba(201,168,76,0.2);
+        }
+
+        .form-section:last-child { border-bottom: none; }
+
+        .form-section-title {
+            color: #c9a84c;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #c9a84c;
+        }
+
+        .form-group { margin-bottom: 12px; }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            font-size: 10.5px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            background: #161616;
+            border: 1.5px solid #333;
+            border-radius: 6px;
+            color: #eee;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #c9a84c;
+            background: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.5;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder { color: #555; }
+
+        .btn-panel {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 6px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-panel svg { width: 14px; height: 14px; }
+
+        .btn-panel-upload {
+            background: linear-gradient(135deg, #1a3a2e, #0f2419);
+            color: #c9a84c;
+            border: 1.5px solid #c9a84c;
+        }
+
+        .btn-panel-upload:hover {
+            background: linear-gradient(135deg, #22483a, #153022);
+            transform: translateY(-1px);
+        }
+
+        .btn-panel-danger {
+            background: transparent;
+            color: #d33;
+            border: 1.5px solid #d33;
+        }
+
+        .btn-panel-danger:hover { background: #d33; color: white; }
+
+        .btn-panel-reset {
+            background: transparent;
+            color: #d33;
+            border: 1.5px solid #d33;
+        }
+
+        .btn-panel-reset:hover { background: #d33; color: white; }
+
+        .photo-preview-panel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #161616;
+            border: 1.5px solid #333;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .photo-preview-panel img {
+            width: 50px;
+            height: 66px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1.5px solid #c9a84c;
+            background: #222;
+            display: none;
+        }
+
+        .photo-preview-panel.has-photo img { display: block; }
+
+        .photo-preview-info {
+            flex: 1;
+            font-size: 10.5px;
+            color: #888;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .photo-preview-info strong {
+            color: #c9a84c;
+            display: block;
+            margin-bottom: 2px;
+            font-size: 11px;
+        }
+
+        .panel-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 24px;
+            background: linear-gradient(180deg, transparent, #1f1f1f 30%);
+            border-top: 1px solid rgba(201,168,76,0.2);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .panel-actions .btn-panel { margin-top: 0; }
+
+        .btn-panel-download {
+            background: linear-gradient(135deg, #c9a84c, #a88832);
+            color: #1a3a2e;
+        }
+
+        .btn-panel-download:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201,168,76,0.4);
+        }
+
+        .btn-panel-print {
+            background: transparent;
+            color: #ddd;
+            border: 1.5px solid #555;
+        }
+
+        .btn-panel-print:hover { border-color: #c9a84c; color: #c9a84c; }
+
+        .toolbar-bottom {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #2a2a2a, #1f1f1f);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 1px solid rgba(201,168,76,0.3);
+            max-width: 297mm;
+            width: 100%;
+        }
+
+        .toolbar-info { color: #888; font-size: 11px; font-style: italic; }
+
+        /* ===== SERTIFIKAT ===== */
+        .certificate-container {
+            width: 297mm;
+            height: 210mm;
+            background: #ffffff;
+            position: relative;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .frame-outer {
+            position: absolute;
+            inset: 0;
+            border: 8mm solid #1a3a2e;
+            background: transparent;
+        }
+
+        .frame-outer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(201,168,76,0.15) 3px, rgba(201,168,76,0.15) 4px),
+                repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(201,168,76,0.15) 3px, rgba(201,168,76,0.15) 4px);
+            pointer-events: none;
+        }
+
+        .frame-gold-1 {
+            position: absolute;
+            inset: 8mm;
+            border: 2px solid #c9a84c;
+            box-shadow:
+                inset 0 0 0 1px #1a3a2e,
+                inset 0 0 0 4px #c9a84c,
+                inset 0 0 0 5px #1a3a2e,
+                0 0 0 1px rgba(201,168,76,0.4);
+            pointer-events: none;
+        }
+
+        .frame-inner {
+            position: absolute;
+            inset: 15mm;
+            background: #fdfcf8;
+            border: 1px solid rgba(201,168,76,0.5);
+            box-shadow:
+                inset 0 0 40px rgba(26,58,46,0.04),
+                0 2px 8px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .frame-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(201,168,76,0.05) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(26,58,46,0.04) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(201,168,76,0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .ornament-corner {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .ornament-corner svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+
+        .ornament-tl { top: 6mm; left: 6mm; }
+        .ornament-tr { top: 6mm; right: 6mm; transform: scaleX(-1); }
+        .ornament-bl { bottom: 6mm; left: 6mm; transform: scaleY(-1); }
+        .ornament-br { bottom: 6mm; right: 6mm; transform: scale(-1); }
+
+        .ornament-side {
+            position: absolute;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        .ornament-side-top {
+            top: 6mm; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 40px;
+        }
+
+        .ornament-side-bottom {
+            bottom: 6mm; left: 50%; transform: translateX(-50%) rotate(180deg);
+            width: 120px; height: 40px;
+        }
+
+        .ornament-side-left {
+            left: 6mm; top: 50%; transform: translateY(-50%) rotate(-90deg);
+            width: 120px; height: 40px;
+        }
+
+        .ornament-side-right {
+            right: 6mm; top: 50%; transform: translateY(-50%) rotate(90deg);
+            width: 120px; height: 40px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 5;
+            padding: 22mm 28mm 16mm 28mm;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* ===== HEADER DENGAN 2 LOGO ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 10px;
+            position: relative;
+            border-bottom: 2px solid #1a3a2e;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0; right: 0;
+            height: 1px;
+            background: #c9a84c;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: -7px; left: 0; right: 0;
+            height: 1px;
+            background: rgba(201,168,76,0.4);
+        }
+
+        .logo-img {
+            width: 75px;
+            height: 75px;
+            flex-shrink: 0;
+            object-fit: contain;
+        }
+
+        .header-text { flex: 1; text-align: center; }
+
+        .org-name {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a3a2e;
+            letter-spacing: 1.2px;
+            line-height: 1.2;
+        }
+
+        .org-branch {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #c9a84c;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .org-address {
+            font-size: 8.5px;
+            color: #666;
+            margin-top: 5px;
+            letter-spacing: 0.2px;
+            line-height: 1.4;
+        }
+
+        .org-email {
+            font-size: 8.5px;
+            color: #666;
+            margin-top: 1px;
+            letter-spacing: 0.2px;
+            line-height: 1.4;
+        }
+
+        /* ===== JUDUL ===== */
+        .title-section {
+            text-align: center;
+            margin: 12px 0 6px 0;
+            position: relative;
+        }
+
+        .cert-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 56px;
+            color: #1a3a2e;
+            line-height: 1;
+            text-shadow: 2px 2px 0 rgba(201,168,76,0.25);
+        }
+
+        .cert-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            letter-spacing: 8px;
+            color: #c9a84c;
+            font-weight: 600;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        .cert-number {
+            display: inline-block;
+            font-size: 10.5px;
+            color: #555;
+            margin-top: 5px;
+            padding: 3px 20px;
+            background: linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent);
+            letter-spacing: 1px;
+            font-weight: 500;
+            border-top: 1px solid rgba(201,168,76,0.3);
+            border-bottom: 1px solid rgba(201,168,76,0.3);
+        }
+
+        .recipient-section { text-align: center; margin: 6px 0 4px 0; }
+
+        .given-to {
+            font-size: 11px;
+            color: #777;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .recipient-name {
+            font-family: 'Cinzel', serif;
+            font-size: 31px;
+            font-weight: 700;
+            color: #1a3a2e;
+            margin: 8px 0 4px 0;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            padding: 0 40px;
+        }
+
+        .recipient-name::before,
+        .recipient-name::after {
+            content: '❖';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: #c9a84c;
+        }
+        .recipient-name::before { left: 5px; }
+        .recipient-name::after { right: 5px; }
+
+        .recipient-detail {
+            font-size: 11px;
+            color: #555;
+            margin-top: 2px;
+            line-height: 1.6;
+        }
+
+        .recipient-detail span { color: #1a3a2e; font-weight: 600; }
+
+        .role-section { text-align: center; margin: 5px 0 3px 0; }
+
+        .role-label {
+            font-size: 10.5px;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .role-name {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #c9a84c;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        /* ===== DESKRIPSI - TEXT CENTER ===== */
+        .description {
+            text-align: center;
+            font-size: 10.5px;
+            line-height: 1.7;
+            color: #444;
+            margin: 6px auto 0 auto;
+            max-width: 680px;
+        }
+
+        .description strong { color: #1a3a2e; font-weight: 700; }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+            padding-top: 6px;
+            gap: 15px;
+        }
+
+        .sign-box {
+            text-align: center;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .sign-title {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .sign-title strong { color: #1a3a2e; font-weight: 600; }
+
+        /* ===== SIGN SPACE (TANDA TANGAN) ===== */
+        .sign-space {
+            height: 55px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /* Gambar tanda tangan */
+        .sign-img {
+            max-width: 130px;
+            max-height: 55px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin-bottom: 3px;
+            /* Pastikan tanda tangan tampil di atas garis */
+            position: relative;
+            z-index: 2;
+            /* Efek smooth */
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        /* Garis tanda tangan */
+        .sign-space::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 1px;
+            background: #ccc;
+            z-index: 1;
+        }
+
+        .sign-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a3a2e;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .sign-nip { font-size: 9.5px; color: #888; margin-top: 2px; }
+
+        .photo-area { flex-shrink: 0; position: relative; }
+
+        .photo-box {
+            width: 2.6cm;
+            height: 3.6cm;
+            border: 1.5px solid #c9a84c;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #faf8f2, #f0ece0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 8.5px;
+            color: #aaa;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .photo-box:hover {
+            border-color: #a88832;
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.2);
+        }
+
+        .photo-box::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px dashed rgba(201,168,76,0.4);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 2;
+            transition: opacity 0.25s ease;
+        }
+
+        .photo-box.has-photo::before { opacity: 0; }
+
+        .photo-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            border-radius: 2px;
+            display: none;
+            z-index: 1;
+        }
+
+        .photo-box.has-photo .photo-img { display: block; }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 3;
+            padding: 4px;
+            transition: opacity 0.25s ease;
+        }
+
+        .photo-box.has-photo .photo-placeholder {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .photo-placeholder svg {
+            width: 22px;
+            height: 22px;
+            stroke: #c9a84c;
+            margin-bottom: 4px;
+            opacity: 0.7;
+        }
+
+        .photo-placeholder span {
+            font-size: 8px;
+            color: #b0a070;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #d33;
+            color: white;
+            border: 2px solid #fff;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            z-index: 20;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .photo-remove:hover { transform: scale(1.15); }
+        .photo-area.has-photo .photo-remove { display: flex; }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 99999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-overlay.active { display: flex; }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(201,168,76,0.2);
+            border-top-color: #c9a84c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            color: #c9a84c;
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            max-width: 400px;
+            padding: 0 20px;
+            line-height: 1.6;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #1a3a2e, #0f2419);
+            color: #c9a84c;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1.5px solid #c9a84c;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 100000;
+            opacity: 0;
+            transition: all 0.35s ease;
+            pointer-events: none;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #4a1515, #2a0808);
+            color: #ff6666;
+            border-color: #ff6666;
+        }
+
+        @media print {
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            html, body {
+                background: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                min-height: auto !important;
+                gap: 0 !important;
+                display: block !important;
+                width: 297mm !important;
+                height: 210mm !important;
+            }
+
+            .control-panel, .panel-toggle, .toolbar-bottom,
+            .loading-overlay, .toast, button, input, .file-info,
+            .panel-actions, .panel-header, .panel-body {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+            }
+
+            .photo-area .photo-remove,
+            .photo-area.has-photo .photo-remove,
+            .photo-box .photo-remove,
+            .photo-box.has-photo .photo-remove,
+            #photoRemove, .photo-remove {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                color: transparent !important;
+            }
+
+            .certificate-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+                width: 297mm !important;
+                height: 210mm !important;
+                overflow: hidden !important;
+            }
+
+            .frame-outer { border-color: #1a3a2e !important; }
+            .frame-gold-1 { border-color: #c9a84c !important; }
+        }
+
+        @media screen and (max-width: 1100px) {
+            .certificate-container { width: 100%; height: auto; aspect-ratio: 297 / 210; }
+            .content { padding: 18mm 22mm 12mm 22mm; }
+            .cert-title { font-size: 44px; }
+            .recipient-name { font-size: 25px; }
+            .role-name { font-size: 18px; }
+            .description { font-size: 10px; }
+            .org-name { font-size: 14px; }
+            .org-branch { font-size: 18px; }
+            .ornament-corner { width: 70px; height: 70px; }
+            .logo-img { width: 60px; height: 60px; }
+            .sign-img { max-width: 100px; max-height: 45px; }
+        }
+
+        @media screen and (max-width: 600px) {
+            .control-panel { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="panel-toggle" id="panelToggle" title="Buka Panel Kontrol" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+    </button>
+
+    <aside class="control-panel" id="controlPanel">
+        <div class="panel-header">
+            <div class="panel-title">⚜ Panel Kontrol</div>
+            <button class="panel-close" id="panelClose" title="Tutup" type="button">×</button>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="form-section">
+                <div class="form-section-title">Data Organisasi</div>
+
+                <div class="form-group">
+                    <label>Nama Organisasi (Baris 1)</label>
+                    <input type="text" id="inputOrgName" placeholder="PUSAT KEGIATAN BELAJAR MASYARAKAT">
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Lembaga (Baris 2)</label>
+                    <input type="text" id="inputOrgBranch" placeholder="PKBM JATI MAS">
+                </div>
+
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <textarea id="inputOrgAddress" rows="2" placeholder="Sekretariat: ..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" id="inputOrgEmail" placeholder="pkbmjatimas87@gmail.com">
+                </div>
+
+                <button class="btn-panel btn-panel-upload" id="btnUploadLogoKiri" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Upload Logo KIRI (Tut Wuri)
+                </button>
+                <input type="file" id="inputLogoKiri" accept="image/*" style="display:none;">
+
+                <button class="btn-panel btn-panel-upload" id="btnUploadLogoKanan" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Upload Logo KANAN (PKBM Jati Mas)
+                </button>
+                <input type="file" id="inputLogoKanan" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Data Sertifikat</div>
+
+                <div class="form-group">
+                    <label>Judul Sertifikat</label>
+                    <input type="text" id="inputCertTitle" placeholder="Sertifikat">
+                </div>
+
+                <div class="form-group">
+                    <label>Subtitle</label>
+                    <input type="text" id="inputCertSubtitle" placeholder="Penghargaan">
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor Sertifikat</label>
+                    <input type="text" id="inputCertNumber" placeholder="035/SPNF/P9908300/PKBM-JTMS/X/2026">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Data Penerima</div>
+
+                <div class="form-group">
+                    <label>Nama Penerima</label>
+                    <input type="text" id="inputRecipientName" placeholder="SUGIYANTO, SE, M.Si">
+                </div>
+
+                <div class="form-group">
+                    <label>Tempat, Tanggal Lahir</label>
+                    <input type="text" id="inputRecipientBirth" placeholder="Bondowoso, 05 Desember 1987">
+                </div>
+
+                <div class="form-group">
+                    <label>Asal Lembaga</label>
+                    <input type="text" id="inputRecipientInstitution" placeholder="PKBM JATI MAS">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Pas Foto 3×4</div>
+
+                <div class="photo-preview-panel" id="photoPreviewPanel">
+                    <img id="panelPhotoImg" alt="Preview">
+                    <div class="photo-preview-info">
+                        <strong id="panelPhotoStatus">Belum ada foto</strong>
+                        <span id="panelPhotoInfo">Klik tombol di bawah untuk upload</span>
+                    </div>
+                </div>
+
+                <button class="btn-panel btn-panel-upload" id="btnUploadFotoPanel" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Upload Pas Foto
+                </button>
+
+                <button class="btn-panel btn-panel-danger" id="btnRemoveFotoPanel" type="button" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Hapus Foto
+                </button>
+                <input type="file" id="inputFotoPanel" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Role / Predikat</div>
+
+                <div class="form-group">
+                    <label>Diberikan Sebagai</label>
+                    <select id="inputRole">
+                        <option value="Peserta">Peserta</option>
+                        <option value="Narasumber">Narasumber</option>
+                        <option value="Pembicara">Pembicara</option>
+                        <option value="Pemenang">Pemenang</option>
+                        <option value="Juara 1">Juara 1</option>
+                        <option value="Juara 2">Juara 2</option>
+                        <option value="Juara 3">Juara 3</option>
+                        <option value="Fasilitator">Fasilitator</option>
+                        <option value="Moderator">Moderator</option>
+                        <option value="Panitia">Panitia</option>
+                        <option value="Pengajar">Pengajar</option>
+                        <option value="Pendamping">Pendamping</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Atau Ketik Manual</label>
+                    <input type="text" id="inputRoleCustom" placeholder="Kosongkan jika pakai dropdown">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Deskripsi Kegiatan</div>
+
+                <div class="form-group">
+                    <label>Deskripsi (boleh pakai &lt;strong&gt;...&lt;/strong&gt;)</label>
+                    <textarea id="inputDescription" rows="6" placeholder="Dalam Rangka Pelaksanaan ..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Tanda Tangan KIRI</div>
+
+                <div class="form-group">
+                    <label>Jabatan</label>
+                    <input type="text" id="inputSign1Title" placeholder="Kepala SPNF PKBM Jati Mas">
+                </div>
+
+                <div class="form-group">
+                    <label>Institusi</label>
+                    <input type="text" id="inputSign1Institution" placeholder="Kabupaten Bondowoso">
+                </div>
+
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" id="inputSign1Name" placeholder="SUGIYANTO, SH., SE., M.Si">
+                </div>
+
+                <div class="form-group">
+                    <label>NIK</label>
+                    <input type="text" id="inputSign1Nip" placeholder="NIK. 3511180512870004">
+                </div>
+
+                <button class="btn-panel btn-panel-upload" id="btnUploadTtd1" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Ganti TTD KIRI
+                </button>
+                <input type="file" id="inputTtd1" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Tanda Tangan KANAN</div>
+
+                <div class="form-group">
+                    <label>Tanggal & Tempat</label>
+                    <input type="text" id="inputSign2Date" placeholder="Bondowoso, 16 Oktober 2026">
+                </div>
+
+                <div class="form-group">
+                    <label>Jabatan</label>
+                    <input type="text" id="inputSign2Title" placeholder="Ketua Panitia Pelaksana">
+                </div>
+
+                <div class="form-group">
+                    <label>Institusi</label>
+                    <input type="text" id="inputSign2Institution" placeholder="Implementasi Litnum PKBM Jati Mas">
+                </div>
+
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" id="inputSign2Name" placeholder="NURUL HIDAYATI">
+                </div>
+
+                <div class="form-group">
+                    <label>NIK</label>
+                    <input type="text" id="inputSign2Nip" placeholder="NIK. 3511185808910001">
+                </div>
+
+                <button class="btn-panel btn-panel-upload" id="btnUploadTtd2" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Ganti TTD KANAN
+                </button>
+                <input type="file" id="inputTtd2" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="form-section">
+                <button class="btn-panel btn-panel-reset" id="btnReset" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                    Reset ke Default
+                </button>
+            </div>
+
+        </div>
+
+        <div class="panel-actions">
+            <button class="btn-panel btn-panel-download" id="btnDownload" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                PNG
+            </button>
+            <button class="btn-panel btn-panel-print" id="btnPrint" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9"/>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                    <rect x="6" y="14" width="12" height="8"/>
+                </svg>
+                Cetak
+            </button>
+        </div>
+    </aside>
+
+    <div class="certificate-container" id="certificate">
+
+        <div class="frame-outer"></div>
+        <div class="frame-gold-1"></div>
+        <div class="frame-inner"></div>
+
+        <div class="ornament-corner ornament-tl">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 2 L98 2 L98 8 L8 8 L8 98 L2 98 Z" fill="#c9a84c"/>
+                <path d="M2 2 L2 98 L8 98 L8 8 L98 8 L98 2 Z" fill="#1a3a2e"/>
+                <path d="M15 15 Q 15 35, 35 35 Q 15 35, 15 55" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M15 15 Q 35 15, 35 35 Q 35 15, 55 15" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M20 20 Q 25 25, 22 30 Q 18 25, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <path d="M20 20 Q 25 15, 30 18 Q 25 22, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <circle cx="35" cy="35" r="3" fill="#c9a84c"/>
+                <circle cx="35" cy="35" r="1.5" fill="#1a3a2e"/>
+                <line x1="8" y1="8" x2="35" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <line x1="35" y1="8" x2="8" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <circle cx="10" cy="10" r="1.5" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-corner ornament-tr">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 2 L98 2 L98 8 L8 8 L8 98 L2 98 Z" fill="#c9a84c"/>
+                <path d="M2 2 L2 98 L8 98 L8 8 L98 8 L98 2 Z" fill="#1a3a2e"/>
+                <path d="M15 15 Q 15 35, 35 35 Q 15 35, 15 55" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M15 15 Q 35 15, 35 35 Q 35 15, 55 15" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M20 20 Q 25 25, 22 30 Q 18 25, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <path d="M20 20 Q 25 15, 30 18 Q 25 22, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <circle cx="35" cy="35" r="3" fill="#c9a84c"/>
+                <circle cx="35" cy="35" r="1.5" fill="#1a3a2e"/>
+                <line x1="8" y1="8" x2="35" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <line x1="35" y1="8" x2="8" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <circle cx="10" cy="10" r="1.5" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-corner ornament-bl">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 2 L98 2 L98 8 L8 8 L8 98 L2 98 Z" fill="#c9a84c"/>
+                <path d="M2 2 L2 98 L8 98 L8 8 L98 8 L98 2 Z" fill="#1a3a2e"/>
+                <path d="M15 15 Q 15 35, 35 35 Q 15 35, 15 55" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M15 15 Q 35 15, 35 35 Q 35 15, 55 15" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M20 20 Q 25 25, 22 30 Q 18 25, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <path d="M20 20 Q 25 15, 30 18 Q 25 22, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <circle cx="35" cy="35" r="3" fill="#c9a84c"/>
+                <circle cx="35" cy="35" r="1.5" fill="#1a3a2e"/>
+                <line x1="8" y1="8" x2="35" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <line x1="35" y1="8" x2="8" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <circle cx="10" cy="10" r="1.5" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-corner ornament-br">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 2 L98 2 L98 8 L8 8 L8 98 L2 98 Z" fill="#c9a84c"/>
+                <path d="M2 2 L2 98 L8 98 L8 8 L98 8 L98 2 Z" fill="#1a3a2e"/>
+                <path d="M15 15 Q 15 35, 35 35 Q 15 35, 15 55" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M15 15 Q 35 15, 35 35 Q 35 15, 55 15" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M20 20 Q 25 25, 22 30 Q 18 25, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <path d="M20 20 Q 25 15, 30 18 Q 25 22, 20 20 Z" fill="#c9a84c" opacity="0.8"/>
+                <circle cx="35" cy="35" r="3" fill="#c9a84c"/>
+                <circle cx="35" cy="35" r="1.5" fill="#1a3a2e"/>
+                <line x1="8" y1="8" x2="35" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <line x1="35" y1="8" x2="8" y2="35" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+                <circle cx="10" cy="10" r="1.5" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-side ornament-side-top">
+            <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 20 Q 30 0, 60 20 Q 90 0, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M0 20 Q 30 40, 60 20 Q 90 40, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <circle cx="60" cy="20" r="4" fill="#c9a84c"/>
+                <circle cx="60" cy="20" r="2" fill="#1a3a2e"/>
+                <circle cx="30" cy="20" r="2" fill="#c9a84c"/>
+                <circle cx="90" cy="20" r="2" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-side ornament-side-bottom">
+            <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 20 Q 30 0, 60 20 Q 90 0, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M0 20 Q 30 40, 60 20 Q 90 40, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <circle cx="60" cy="20" r="4" fill="#c9a84c"/>
+                <circle cx="60" cy="20" r="2" fill="#1a3a2e"/>
+                <circle cx="30" cy="20" r="2" fill="#c9a84c"/>
+                <circle cx="90" cy="20" r="2" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-side ornament-side-left">
+            <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 20 Q 30 0, 60 20 Q 90 0, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M0 20 Q 30 40, 60 20 Q 90 40, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <circle cx="60" cy="20" r="4" fill="#c9a84c"/>
+                <circle cx="60" cy="20" r="2" fill="#1a3a2e"/>
+                <circle cx="30" cy="20" r="2" fill="#c9a84c"/>
+                <circle cx="90" cy="20" r="2" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="ornament-side ornament-side-right">
+            <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 20 Q 30 0, 60 20 Q 90 0, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <path d="M0 20 Q 30 40, 60 20 Q 90 40, 120 20" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <circle cx="60" cy="20" r="4" fill="#c9a84c"/>
+                <circle cx="60" cy="20" r="2" fill="#1a3a2e"/>
+                <circle cx="30" cy="20" r="2" fill="#c9a84c"/>
+                <circle cx="90" cy="20" r="2" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <div class="content">
+
+            <div class="header">
+                <img src="/api/admin/certificate?asset=logo-tutwuri.png" alt="Logo Kiri" class="logo-img" id="certLogoKiri">
+
+                <div class="header-text">
+                    <div class="org-name" id="certOrgName">PUSAT KEGIATAN BELAJAR MASYARAKAT</div>
+                    <div class="org-branch" id="certOrgBranch">PKBM JATI MAS</div>
+                    <div class="org-address" id="certOrgAddress">Sekretariat: Dusun Bata RT.028 RW.005 Desa Tegaljati Kecamatan Sumberwringin Kabupaten Bondowoso Provinsi Jawa Timur</div>
+                    <div class="org-email" id="certOrgEmail">Email: pkbmjatimas87@gmail.com</div>
+                </div>
+
+                <img src="/api/admin/certificate?asset=logo-pkbm-jatimas.png" alt="Logo Kanan" class="logo-img" id="certLogoKanan">
+            </div>
+
+            <div class="title-section">
+                <div class="cert-title" id="certTitle">Sertifikat</div>
+                <div class="cert-subtitle" id="certSubtitle">Penghargaan</div>
+                <div class="cert-number" id="certNumber">Nomor: 035/SPNF/P9908300/PKBM-JTMS/X/2026</div>
+            </div>
+
+            <div class="recipient-section">
+                <div class="given-to">Diberikan kepada</div>
+                <div class="recipient-name" id="certRecipientName">SUGIYANTO, SE, M.Si</div>
+                <div class="recipient-detail">
+                    Tempat, tgl. lahir: <span id="certRecipientBirth">Bondowoso, 05 Desember 1987</span><br>
+                    Asal Lembaga: <span id="certRecipientInstitution">PKBM JATI MAS</span>
+                </div>
+            </div>
+
+            <div class="role-section">
+                <div class="role-label">Sebagai</div>
+                <div class="role-name" id="certRole">Peserta</div>
+            </div>
+
+            <div class="description" id="certDescription">
+                Dalam Rangka Pelaksanaan <strong>Program Bantuan Operasional Satuan Pendidikan (BOSP) Kinerja Terbaik Tahun 2026</strong> Serta Upaya Peningkatan Kapasitas Pendidik Dan Tenaga Kependidikan Dalam Pemanfaatan Teknologi Informasi Pada Proses Pembelajaran Maka Dilaksanakan Kegiatan "<strong>Implementasi Penguatan Digitalisasi Pembelajaran Dengan Substansi Peningkatan Literasi-Numerasi</strong>", Dilaksanakan Pada Tanggal <strong>16 Oktober 2026</strong> di SPNF PKBM JATI MAS.
+            </div>
+
+            <div class="footer">
+                <div class="sign-box">
+                    <div class="sign-title">
+                        Mengetahui,<br>
+                        <strong id="certSign1Title">Kepala SPNF PKBM Jati Mas</strong><br>
+                        <span id="certSign1Institution">Kabupaten Bondowoso</span>
+                    </div>
+                    <div class="sign-space">
+                        <img src="/api/admin/certificate?asset=ttd1.png" alt="TTD Kiri" class="sign-img" id="certTtd1"
+                             onerror="this.style.display='none'">
+                    </div>
+                    <div class="sign-name" id="certSign1Name">SUGIYANTO, SH., SE., M.Si</div>
+                    <div class="sign-nip" id="certSign1Nip">NIK. 3511180512870004</div>
+                </div>
+
+                <div class="photo-area" id="photoArea">
+                    <div class="photo-box" id="photoBox" title="Klik untuk upload pas foto">
+                        <div id="fotoPreview" class="photo-img"></div>
+                        <div class="photo-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Pas Foto<br>3 × 4</span>
+                        </div>
+                    </div>
+                    <button class="photo-remove" id="photoRemove" title="Hapus foto" data-html2canvas-ignore="true" type="button">×</button>
+                </div>
+
+                <div class="sign-box">
+                    <div class="sign-title">
+                        <span id="certSign2Date">Bondowoso, 16 Oktober 2026</span><br>
+                        <strong id="certSign2Title">Ketua Panitia Pelaksana</strong><br>
+                        <span id="certSign2Institution">Implementasi Litnum PKBM Jati Mas</span>
+                    </div>
+                    <div class="sign-space">
+                        <img src="/api/admin/certificate?asset=ttd2.png" alt="TTD Kanan" class="sign-img" id="certTtd2"
+                             onerror="this.style.display='none'">
+                    </div>
+                    <div class="sign-name" id="certSign2Name">NURUL HIDAYATI</div>
+                    <div class="sign-nip" id="certSign2Nip">NIK. 3511185808910001</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="toolbar-bottom">
+        <span class="toolbar-info">💡 Klik tombol ⚙ di kanan atas untuk membuka panel kontrol & mengubah data sertifikat</span>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Memproses...</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <style>
+        /* The certificate now uses fixed template settings; keep the original artwork, hide editor controls. */
+        .panel-toggle, .control-panel, .toolbar-bottom { display: none !important; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            console.log('✅ Script loaded');
+
+            const DEFAULTS = {
+                orgName: 'PUSAT KEGIATAN BELAJAR MASYARAKAT',
+                orgBranch: 'PKBM JATI MAS',
+                orgAddress: 'Sekretariat: Dusun Bata RT.028 RW.005 Desa Tegaljati Kecamatan Sumberwringin Kabupaten Bondowoso Provinsi Jawa Timur',
+                orgEmail: 'Email: pkbmjatimas87@gmail.com',
+                certTitle: 'Sertifikat',
+                certSubtitle: 'Penghargaan',
+                certNumber: 'Nomor: 035/SPNF/P9908300/PKBM-JTMS/X/2026',
+                recipientName: 'SUGIYANTO, SE, M.Si',
+                recipientBirth: 'Bondowoso, 05 Desember 1987',
+                recipientInstitution: 'PKBM JATI MAS',
+                role: 'Peserta',
+                description: 'Dalam Rangka Pelaksanaan <strong>Program Bantuan Operasional Satuan Pendidikan (BOSP) Kinerja Terbaik Tahun 2026</strong> Serta Upaya Peningkatan Kapasitas Pendidik Dan Tenaga Kependidikan Dalam Pemanfaatan Teknologi Informasi Pada Proses Pembelajaran Maka Dilaksanakan Kegiatan "<strong>Implementasi Penguatan Digitalisasi Pembelajaran Dengan Substansi Peningkatan Literasi-Numerasi</strong>", Dilaksanakan Pada Tanggal <strong>16 Oktober 2026</strong> di SPNF PKBM JATI MAS.',
+                sign1Title: 'Kepala SPNF PKBM Jati Mas',
+                sign1Institution: 'Kabupaten Bondowoso',
+                sign1Name: 'SUGIYANTO, SH., SE., M.Si',
+                sign1Nip: 'NIK. 3511180512870004',
+                sign2Date: 'Bondowoso, 16 Oktober 2026',
+                sign2Title: 'Ketua Panitia Pelaksana',
+                sign2Institution: 'Implementasi Litnum PKBM Jati Mas',
+                sign2Name: 'NURUL HIDAYATI',
+                sign2Nip: 'NIK. 3511185808910001'
+            };
+
+            const $ = (id) => document.getElementById(id);
+
+            const panelToggle = $('panelToggle');
+            const panelClose = $('panelClose');
+            const controlPanel = $('controlPanel');
+            const btnDownload = $('btnDownload');
+            const btnPrint = $('btnPrint');
+            const btnReset = $('btnReset');
+            const btnUploadLogoKiri = $('btnUploadLogoKiri');
+            const inputLogoKiri = $('inputLogoKiri');
+            const btnUploadLogoKanan = $('btnUploadLogoKanan');
+            const inputLogoKanan = $('inputLogoKanan');
+            const btnUploadTtd1 = $('btnUploadTtd1');
+            const inputTtd1 = $('inputTtd1');
+            const btnUploadTtd2 = $('btnUploadTtd2');
+            const inputTtd2 = $('inputTtd2');
+            const btnUploadFotoPanel = $('btnUploadFotoPanel');
+            const btnRemoveFotoPanel = $('btnRemoveFotoPanel');
+            const inputFotoPanel = $('inputFotoPanel');
+            const photoPreviewPanel = $('photoPreviewPanel');
+            const panelPhotoImg = $('panelPhotoImg');
+            const panelPhotoStatus = $('panelPhotoStatus');
+            const panelPhotoInfo = $('panelPhotoInfo');
+            const inputFoto = $('inputFoto');
+            const photoBox = $('photoBox');
+            const photoArea = $('photoArea');
+            const fotoPreview = $('fotoPreview');
+            const photoRemove = $('photoRemove');
+            const certificate = $('certificate');
+            const loadingOverlay = $('loadingOverlay');
+            const loadingText = $('loadingText');
+            const toast = $('toast');
+            const certLogoKiri = $('certLogoKiri');
+            const certLogoKanan = $('certLogoKanan');
+            const certTtd1 = $('certTtd1');
+            const certTtd2 = $('certTtd2');
+
+            let toastTimer;
+            function showToast(msg, isError) {
+                if (!toast) return;
+                toast.textContent = msg;
+                toast.classList.toggle('error', !!isError);
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3500);
+            }
+
+            function showLoading(text) {
+                if (!loadingOverlay) return;
+                loadingText.textContent = text || 'Memproses...';
+                loadingOverlay.classList.add('active');
+            }
+
+            function hideLoading() {
+                if (!loadingOverlay) return;
+                loadingOverlay.classList.remove('active');
+            }
+
+            if (panelToggle) {
+                panelToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    controlPanel.classList.toggle('open');
+                });
+            }
+
+            if (panelClose) {
+                panelClose.addEventListener('click', function () {
+                    controlPanel.classList.remove('open');
+                });
+            }
+
+            document.addEventListener('click', function (e) {
+                if (controlPanel && controlPanel.classList.contains('open') &&
+                    !controlPanel.contains(e.target) &&
+                    panelToggle && !panelToggle.contains(e.target)) {
+                    controlPanel.classList.remove('open');
+                }
+            });
+
+            const bindings = [
+                { input: 'inputOrgName',           target: 'certOrgName',           key: 'orgName' },
+                { input: 'inputOrgBranch',         target: 'certOrgBranch',         key: 'orgBranch' },
+                { input: 'inputOrgAddress',        target: 'certOrgAddress',        key: 'orgAddress' },
+                { input: 'inputOrgEmail',          target: 'certOrgEmail',          key: 'orgEmail' },
+                { input: 'inputCertTitle',         target: 'certTitle',             key: 'certTitle' },
+                { input: 'inputCertSubtitle',      target: 'certSubtitle',          key: 'certSubtitle' },
+                { input: 'inputCertNumber',        target: 'certNumber',            key: 'certNumber' },
+                { input: 'inputRecipientName',     target: 'certRecipientName',     key: 'recipientName' },
+                { input: 'inputRecipientBirth',    target: 'certRecipientBirth',    key: 'recipientBirth' },
+                { input: 'inputRecipientInstitution', target: 'certRecipientInstitution', key: 'recipientInstitution' },
+                { input: 'inputDescription',       target: 'certDescription',       key: 'description', html: true },
+                { input: 'inputSign1Title',        target: 'certSign1Title',        key: 'sign1Title' },
+                { input: 'inputSign1Institution',  target: 'certSign1Institution',  key: 'sign1Institution' },
+                { input: 'inputSign1Name',         target: 'certSign1Name',         key: 'sign1Name' },
+                { input: 'inputSign1Nip',          target: 'certSign1Nip',          key: 'sign1Nip' },
+                { input: 'inputSign2Date',         target: 'certSign2Date',         key: 'sign2Date' },
+                { input: 'inputSign2Title',        target: 'certSign2Title',        key: 'sign2Title' },
+                { input: 'inputSign2Institution',  target: 'certSign2Institution',  key: 'sign2Institution' },
+                { input: 'inputSign2Name',         target: 'certSign2Name',         key: 'sign2Name' },
+                { input: 'inputSign2Nip',          target: 'certSign2Nip',          key: 'sign2Nip' }
+            ];
+
+            function stripHtml(html) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html.replace(/&nbsp;/g, ' ');
+                return tmp.textContent || tmp.innerText || '';
+            }
+
+            bindings.forEach(b => {
+                const inputEl = $(b.input);
+                const targetEl = $(b.target);
+                if (!inputEl || !targetEl) return;
+
+                inputEl.value = stripHtml(DEFAULTS[b.key]);
+
+                inputEl.addEventListener('input', function () {
+                    const val = inputEl.value;
+                    if (b.html) {
+                        targetEl.innerHTML = val || '&nbsp;';
+                    } else {
+                        targetEl.textContent = val;
+                    }
+                });
+            });
+
+            const inputRole = $('inputRole');
+            const inputRoleCustom = $('inputRoleCustom');
+            const certRole = $('certRole');
+
+            if (inputRole && certRole) {
+                inputRole.addEventListener('change', function () {
+                    inputRoleCustom.value = '';
+                    certRole.textContent = inputRole.value;
+                });
+            }
+
+            if (inputRoleCustom && certRole) {
+                inputRoleCustom.addEventListener('input', function () {
+                    if (inputRoleCustom.value.trim() !== '') {
+                        certRole.textContent = inputRoleCustom.value;
+                    } else if (inputRole) {
+                        certRole.textContent = inputRole.value;
+                    }
+                });
+            }
+
+            // ============================================================
+            // UPLOAD LOGO KIRI
+            // ============================================================
+            if (btnUploadLogoKiri && inputLogoKiri) {
+                btnUploadLogoKiri.addEventListener('click', function () {
+                    inputLogoKiri.click();
+                });
+
+                inputLogoKiri.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', true);
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        certLogoKiri.src = event.target.result;
+                        showToast('✓ Logo KIRI berhasil diubah');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ============================================================
+            // UPLOAD LOGO KANAN
+            // ============================================================
+            if (btnUploadLogoKanan && inputLogoKanan) {
+                btnUploadLogoKanan.addEventListener('click', function () {
+                    inputLogoKanan.click();
+                });
+
+                inputLogoKanan.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', true);
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        certLogoKanan.src = event.target.result;
+                        showToast('✓ Logo KANAN berhasil diubah');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ============================================================
+            // UPLOAD TTD KIRI
+            // ============================================================
+            if (btnUploadTtd1 && inputTtd1) {
+                btnUploadTtd1.addEventListener('click', function () {
+                    inputTtd1.click();
+                });
+
+                inputTtd1.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', true);
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        certTtd1.src = event.target.result;
+                        certTtd1.style.display = 'block';
+                        showToast('✓ TTD KIRI berhasil diubah');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ============================================================
+            // UPLOAD TTD KANAN
+            // ============================================================
+            if (btnUploadTtd2 && inputTtd2) {
+                btnUploadTtd2.addEventListener('click', function () {
+                    inputTtd2.click();
+                });
+
+                inputTtd2.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!file.type.startsWith('image/')) {
+                        showToast('File harus berupa gambar', true);
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        certTtd2.src = event.target.result;
+                        certTtd2.style.display = 'block';
+                        showToast('✓ TTD KANAN berhasil diubah');
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // ============================================================
+            // FOTO
+            // ============================================================
+            function processPhotoFile(file) {
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    showToast('File harus berupa gambar', true);
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Ukuran file maksimal 5MB', true);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const dataUrl = event.target.result;
+
+                    fotoPreview.style.backgroundImage = 'url("' + dataUrl + '")';
+                    photoBox.classList.add('has-photo');
+                    photoArea.classList.add('has-photo');
+
+                    panelPhotoImg.src = dataUrl;
+                    photoPreviewPanel.classList.add('has-photo');
+                    panelPhotoStatus.textContent = '✓ Foto terpasang';
+                    panelPhotoStatus.style.color = '#c9a84c';
+                    panelPhotoInfo.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                    btnRemoveFotoPanel.style.display = 'flex';
+
+                    showToast('✓ Foto berhasil diupload');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function removePhoto() {
+                fotoPreview.style.backgroundImage = '';
+                photoBox.classList.remove('has-photo');
+                photoArea.classList.remove('has-photo');
+                inputFoto.value = '';
+                inputFotoPanel.value = '';
+
+                panelPhotoImg.src = '';
+                photoPreviewPanel.classList.remove('has-photo');
+                panelPhotoStatus.textContent = 'Belum ada foto';
+                panelPhotoStatus.style.color = '#888';
+                panelPhotoInfo.textContent = 'Klik tombol di bawah untuk upload';
+                btnRemoveFotoPanel.style.display = 'none';
+
+                showToast('✓ Foto dihapus');
+            }
+
+            if (btnUploadFotoPanel && inputFotoPanel) {
+                btnUploadFotoPanel.addEventListener('click', function () {
+                    inputFotoPanel.click();
+                });
+
+                inputFotoPanel.addEventListener('change', function (e) {
+                    processPhotoFile(e.target.files[0]);
+                });
+            }
+
+            if (btnRemoveFotoPanel) {
+                btnRemoveFotoPanel.addEventListener('click', function () {
+                    removePhoto();
+                });
+            }
+
+            if (photoBox && inputFoto) {
+                photoBox.addEventListener('click', function (e) {
+                    if (e.target === photoRemove || photoRemove.contains(e.target)) return;
+                    inputFoto.click();
+                });
+
+                inputFoto.addEventListener('change', function (e) {
+                    processPhotoFile(e.target.files[0]);
+                });
+            }
+
+            if (photoRemove) {
+                photoRemove.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    removePhoto();
+                });
+            }
+
+            if (photoBox) {
+                photoBox.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                    photoBox.style.borderColor = '#a88832';
+                    photoBox.style.boxShadow = '0 0 0 4px rgba(201,168,76,0.3)';
+                });
+
+                photoBox.addEventListener('dragleave', function (e) {
+                    e.preventDefault();
+                    photoBox.style.borderColor = '';
+                    photoBox.style.boxShadow = '';
+                });
+
+                photoBox.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    photoBox.style.borderColor = '';
+                    photoBox.style.boxShadow = '';
+                    processPhotoFile(e.dataTransfer.files[0]);
+                });
+            }
+
+            // ============================================================
+            // RESET
+            // ============================================================
+            if (btnReset) {
+                btnReset.addEventListener('click', function () {
+                    if (!confirm('Yakin ingin reset semua data ke default?')) return;
+
+                    bindings.forEach(b => {
+                        const inputEl = $(b.input);
+                        const targetEl = $(b.target);
+                        if (!inputEl || !targetEl) return;
+                        inputEl.value = stripHtml(DEFAULTS[b.key]);
+                        if (b.html) {
+                            targetEl.innerHTML = DEFAULTS[b.key];
+                        } else {
+                            targetEl.textContent = DEFAULTS[b.key];
+                        }
+                    });
+
+                    if (inputRole) inputRole.value = 'Peserta';
+                    if (inputRoleCustom) inputRoleCustom.value = '';
+                    if (certRole) certRole.textContent = DEFAULTS.role;
+
+                    showToast('✓ Data direset ke default');
+                });
+            }
+
+            // ============================================================
+            // DOWNLOAD PNG
+            // ============================================================
+            async function handleDownload() {
+                console.log('🖱️ Tombol PNG diklik');
+
+                if (typeof html2canvas === 'undefined') {
+                    showToast('✗ Library html2canvas belum dimuat', true);
+                    return;
+                }
+
+                showLoading('Menyiapkan gambar...');
+                btnDownload.disabled = true;
+
+                const originalPhotoRemoveDisplay = photoRemove.style.display;
+                photoRemove.style.display = 'none';
+
+                try {
+                    await new Promise(r => setTimeout(r, 200));
+                    window.scrollTo(0, 0);
+
+                    const canvas = await html2canvas(certificate, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        width: certificate.offsetWidth,
+                        height: certificate.offsetHeight,
+                        windowWidth: certificate.offsetWidth,
+                        windowHeight: certificate.offsetHeight,
+                        scrollX: 0,
+                        scrollY: 0,
+                        ignoreElements: function (el) {
+                            return el.hasAttribute && el.hasAttribute('data-html2canvas-ignore');
+                        },
+                        onclone: function (clonedDoc) {
+                            const clonedBtn = clonedDoc.getElementById('photoRemove');
+                            if (clonedBtn) clonedBtn.style.display = 'none';
+                        }
+                    });
+
+                    console.log('✅ Canvas:', canvas.width, 'x', canvas.height);
+
+                    photoRemove.style.display = originalPhotoRemoveDisplay;
+
+                    if (canvas.toBlob) {
+                        canvas.toBlob(function (blob) {
+                            if (blob) {
+                                downloadBlob(blob);
+                            } else {
+                                downloadDataURL(canvas);
+                            }
+                        }, 'image/png');
+                    } else {
+                        downloadDataURL(canvas);
+                    }
+
+                } catch (error) {
+                    console.error('❌ Error download:', error);
+                    photoRemove.style.display = originalPhotoRemoveDisplay;
+                    hideLoading();
+                    btnDownload.disabled = false;
+                    showToast('✗ Gagal: ' + (error.message || error.toString()), true);
+                }
+            }
+
+            function downloadBlob(blob) {
+                try {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    link.download = 'Sertifikat_' + timestamp + '.png';
+                    link.href = url;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+                    hideLoading();
+                    btnDownload.disabled = false;
+                    showToast('✓ Download berhasil!');
+                } catch (e) {
+                    console.error('Error download blob:', e);
+                    showToast('✗ Gagal menyimpan file', true);
+                    hideLoading();
+                    btnDownload.disabled = false;
+                }
+            }
+
+            function downloadDataURL(canvas) {
+                try {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    link.download = 'Sertifikat_' + timestamp + '.png';
+                    link.href = dataUrl;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    hideLoading();
+                    btnDownload.disabled = false;
+                    showToast('✓ Download berhasil!');
+                } catch (e) {
+                    console.error('Error download dataURL:', e);
+                    showToast('✗ Gagal: ' + e.message, true);
+                    hideLoading();
+                    btnDownload.disabled = false;
+                }
+            }
+
+            if (btnDownload) {
+                btnDownload.addEventListener('click', handleDownload);
+            }
+
+            // ============================================================
+            // PRINT
+            // ============================================================
+            function handlePrint() {
+                console.log('🖱️ Tombol Cetak diklik');
+
+                const originalDisplay = photoRemove.style.display;
+                photoRemove.style.display = 'none';
+
+                setTimeout(function () {
+                    try {
+                        window.print();
+                    } catch (e) {
+                        console.error('Error print:', e);
+                    }
+
+                    setTimeout(function () {
+                        if (photoArea.classList.contains('has-photo')) {
+                            photoRemove.style.display = originalDisplay || '';
+                        }
+                    }, 800);
+                }, 150);
+            }
+
+            if (btnPrint) {
+                btnPrint.addEventListener('click', handlePrint);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    handleDownload();
+                }
+                if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                    e.preventDefault();
+                    handlePrint();
+                }
+                if (e.key === 'Escape') {
+                    if (controlPanel) controlPanel.classList.remove('open');
+                }
+            });
+
+            console.log('✅ Semua event listener terpasang');
+        });
+    </script>
+
+    <script>
+        // E-Presensi integration: fill only visitor-specific fields; keep the supplied certificate design/content intact.
+        document.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            if (!params.has('nama')) return;
+
+            const setTextInput = function (id, value) {
+                const input = document.getElementById(id);
+                if (!input || value === null) return;
+                input.value = value;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            setTextInput('inputRecipientName', params.get('nama'));
+            setTextInput('inputRecipientBirth', params.get('lahir'));
+            setTextInput('inputRecipientInstitution', params.get('instansi'));
+            const role = document.getElementById('inputRoleCustom');
+            if (role && params.has('jabatan')) {
+                role.value = params.get('jabatan');
+                role.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            const printWhenReady = function () {
+                window.setTimeout(function () { window.focus(); window.print(); }, 300);
+            };
+            const photoId = params.get('photoId');
+            if (!photoId) return printWhenReady();
+
+            fetch('/api/visitor-photo?id=' + encodeURIComponent(photoId), { credentials: 'same-origin' })
+                .then(function (response) { if (!response.ok) throw new Error('Foto tidak tersedia'); return response.blob(); })
+                .then(function (photo) {
+                    const preview = document.getElementById('fotoPreview');
+                    if (preview) preview.style.backgroundImage = 'url("' + URL.createObjectURL(photo) + '")';
+                    document.getElementById('photoBox')?.classList.add('has-photo');
+                    document.getElementById('photoArea')?.classList.add('has-photo');
+                    printWhenReady();
+                })
+                .catch(function () { printWhenReady(); });
+        });
+    </script>
+
+</body>
+</html>

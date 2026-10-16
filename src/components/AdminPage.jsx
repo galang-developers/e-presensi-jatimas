@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { printVisitorCertificate } from '../lib/certificate.js';
 
 function ErrorNotice({ children }) {
   return children ? <p className="form-notice error-notice" role="alert">{children}</p> : null;
@@ -137,7 +138,7 @@ function VisitorDashboard({ onLogout }) {
       <table className="visitor-table"><thead><tr><th>Nomor</th><th>Hari/Tanggal</th><th>Jam Masuk</th><th>Nama Lengkap</th><th>Tempat, Tanggal Lahir</th><th>Jabatan</th><th>Asal Instansi</th><th>Tujuan Kunjungan</th><th>Selfie</th><th>Aksi</th></tr></thead>
         <tbody>{filtered.map((visitor) => <tr key={visitor.id}>
           <td>{visitor.nomor}</td><td>{visitor.hariTanggal}</td><td>{visitor.jamMasuk}</td><td className="visitor-name">{visitor.namaLengkap}</td><td>{visitor.tempatTanggalLahir}</td><td>{visitor.jabatan}</td><td>{visitor.asalInstansi}</td><td className="purpose-cell">{visitor.tujuanKunjungan || '—'}</td>
-          <td><button className="photo-thumb-button" type="button" onClick={() => setPhotoId(visitor.id)} aria-label={`Lihat selfie ${visitor.namaLengkap}`}><img src={`/api/visitor-photo?id=${encodeURIComponent(visitor.id)}`} alt="Selfie pengunjung" loading="lazy" /></button></td><td className="row-actions"><button type="button" className="button button-secondary" onClick={() => startEdit(visitor)}>Edit</button><button type="button" className="button button-danger" onClick={() => deleteVisitor(visitor)}>Hapus</button></td>
+          <td><button className="photo-thumb-button" type="button" onClick={() => setPhotoId(visitor.id)} aria-label={`Lihat selfie ${visitor.namaLengkap}`}><img src={`/api/visitor-photo?id=${encodeURIComponent(visitor.id)}`} alt="Selfie pengunjung" loading="lazy" /></button></td><td className="row-actions"><button type="button" className="button button-secondary" onClick={() => startEdit(visitor)}>Edit</button><button type="button" className="button button-danger" onClick={() => deleteVisitor(visitor)}>Hapus</button><button type="button" className="button button-certificate" onClick={() => { try { printVisitorCertificate(visitor); } catch (reason) { setError(reason.message || 'Jendela cetak belum dapat dibuka.'); } }}>Cetak Sertifikat</button></td>
         </tr>)}</tbody>
       </table>
     </div>}
