@@ -1262,7 +1262,6 @@
         </div>
     </aside>
 
-    <div id="certificateStage">
     <div class="certificate-container" id="certificate">
 
         <div class="frame-outer"></div>
@@ -1462,7 +1461,6 @@
 
         </div>
     </div>
-    </div>
 
     <div class="toolbar-bottom">
         <span class="toolbar-info">💡 Klik tombol ⚙ di kanan atas untuk membuka panel kontrol & mengubah data sertifikat</span>
@@ -1478,24 +1476,6 @@
     <style>
         /* The certificate now uses fixed template settings; keep the original artwork, hide editor controls. */
         .panel-toggle, .control-panel, .toolbar-bottom { display: none !important; }
-        #certificateStage { position: relative; flex: 0 0 auto; }
-        @media screen and (max-width: 1100px) {
-            #certificate.certificate-container { width: 297mm !important; height: 210mm !important; aspect-ratio: auto !important; }
-            #certificate .content { padding: 22mm 28mm 16mm 28mm !important; }
-            #certificate .cert-title { font-size: 56px !important; }
-            #certificate .recipient-name { font-size: 31px !important; }
-            #certificate .role-name { font-size: 22px !important; }
-            #certificate .description { font-size: 10.5px !important; }
-            #certificate .org-name { font-size: 16px !important; }
-            #certificate .org-branch { font-size: 22px !important; }
-            #certificate .ornament-corner { width: 90px !important; height: 90px !important; }
-            #certificate .logo-img { width: 75px !important; height: 75px !important; }
-            #certificate .sign-img { max-width: 130px !important; max-height: 55px !important; }
-        }
-        @media print {
-            #certificateStage { width: 297mm !important; height: 210mm !important; }
-            #certificate.certificate-container { position: relative !important; inset: auto !important; transform: none !important; }
-        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -2074,26 +2054,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             const params = new URLSearchParams(window.location.search);
             if (!params.has('nama')) return;
-
-            const stage = document.getElementById('certificateStage');
-            const certificate = document.getElementById('certificate');
-            if (stage && certificate) {
-                certificate.style.width = '297mm';
-                certificate.style.height = '210mm';
-                certificate.style.position = 'absolute';
-                certificate.style.left = '0';
-                certificate.style.top = '0';
-                const fitCertificate = function () {
-                    const baseWidth = certificate.offsetWidth;
-                    const scale = Math.min(1, Math.max(0.25, (window.innerWidth - 24) / baseWidth));
-                    stage.style.width = (baseWidth * scale) + 'px';
-                    stage.style.height = (certificate.offsetHeight * scale) + 'px';
-                    certificate.style.transformOrigin = 'top left';
-                    certificate.style.transform = 'scale(' + scale + ')';
-                };
-                fitCertificate();
-                window.addEventListener('resize', fitCertificate);
-            }
 
             const setTextInput = function (id, value) {
                 const input = document.getElementById(id);

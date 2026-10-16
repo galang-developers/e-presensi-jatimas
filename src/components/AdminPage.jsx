@@ -45,6 +45,7 @@ function VisitorDashboard({ onLogout }) {
   const [query, setQuery] = useState('');
   const [exporting, setExporting] = useState(false);
   const [photoId, setPhotoId] = useState('');
+  const [mobilePrintNotice, setMobilePrintNotice] = useState(false);
   const [editing, setEditing] = useState(null);
   const [editValues, setEditValues] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
@@ -127,6 +128,17 @@ function VisitorDashboard({ onLogout }) {
     } catch (reason) { setError(reason.message || 'Data belum dapat dihapus.'); }
   }
 
+  function requestCertificatePrint(visitor) {
+    const phoneViewport = window.matchMedia('(max-width: 767px)').matches;
+    const phoneDevice = /iPhone|iPod|Android.*Mobile|Windows Phone|IEMobile/i.test(navigator.userAgent);
+    if (phoneViewport || phoneDevice) {
+      setMobilePrintNotice(true);
+      return;
+    }
+    try { printVisitorCertificate(visitor); }
+    catch (reason) { setError(reason.message || 'Jendela cetak belum dapat dibuka.'); }
+  }
+
   return <section className="admin-dashboard">
     <div className="dashboard-topline"><div><div className="eyebrow">PKBM JATI MAS</div><h1>Dashboard Buku Tamu</h1><p>Daftar kunjungan yang sudah dikirim melalui formulir.</p></div><button className="button button-secondary" type="button" onClick={onLogout}>Keluar</button></div>
     <ErrorNotice>{error}</ErrorNotice>
@@ -138,12 +150,13 @@ function VisitorDashboard({ onLogout }) {
       <table className="visitor-table"><thead><tr><th>Nomor</th><th>Hari/Tanggal</th><th>Jam Masuk</th><th>Nama Lengkap</th><th>Tempat, Tanggal Lahir</th><th>Jabatan</th><th>Asal Instansi</th><th>Tujuan Kunjungan</th><th>Selfie</th><th>Aksi</th></tr></thead>
         <tbody>{filtered.map((visitor) => <tr key={visitor.id}>
           <td>{visitor.nomor}</td><td>{visitor.hariTanggal}</td><td>{visitor.jamMasuk}</td><td className="visitor-name">{visitor.namaLengkap}</td><td>{visitor.tempatTanggalLahir}</td><td>{visitor.jabatan}</td><td>{visitor.asalInstansi}</td><td className="purpose-cell">{visitor.tujuanKunjungan || '—'}</td>
-          <td><button className="photo-thumb-button" type="button" onClick={() => setPhotoId(visitor.id)} aria-label={`Lihat selfie ${visitor.namaLengkap}`}><img src={`/api/visitor-photo?id=${encodeURIComponent(visitor.id)}`} alt="Selfie pengunjung" loading="lazy" /></button></td><td className="row-actions"><button type="button" className="button button-secondary" onClick={() => startEdit(visitor)}>Edit</button><button type="button" className="button button-danger" onClick={() => deleteVisitor(visitor)}>Hapus</button><button type="button" className="button button-certificate" onClick={() => { try { printVisitorCertificate(visitor); } catch (reason) { setError(reason.message || 'Jendela cetak belum dapat dibuka.'); } }}>Cetak Sertifikat</button></td>
+          <td><button className="photo-thumb-button" type="button" onClick={() => setPhotoId(visitor.id)} aria-label={`Lihat selfie ${visitor.namaLengkap}`}><img src={`/api/visitor-photo?id=${encodeURIComponent(visitor.id)}`} alt="Selfie pengunjung" loading="lazy" /></button></td><td className="row-actions"><button type="button" className="button button-secondary" onClick={() => startEdit(visitor)}>Edit</button><button type="button" className="button button-danger" onClick={() => deleteVisitor(visitor)}>Hapus</button><button type="button" className="button button-certificate" onClick={() => requestCertificatePrint(visitor)}>Cetak Sertifikat</button></td>
         </tr>)}</tbody>
       </table>
     </div>}
     <p className="export-note">File Excel berisi data kehadiran saja. Foto selfie tidak disertakan.</p>
     {photoId && <div className="photo-modal" role="presentation" onClick={() => setPhotoId('')}><div className="photo-modal-content" role="dialog" aria-modal="true" aria-label="Foto selfie pengunjung" onClick={(event) => event.stopPropagation()}><button type="button" className="modal-close" onClick={() => setPhotoId('')} aria-label="Tutup">×</button><img src={`/api/visitor-photo?id=${encodeURIComponent(photoId)}`} alt="Selfie pengunjung" /><button type="button" className="button button-secondary" onClick={() => setPhotoId('')}>Tutup</button></div></div>}
+    {mobilePrintNotice && <div className="photo-modal" role="presentation" onClick={() => setMobilePrintNotice(false)}><section className="mobile-print-notice" role="dialog" aria-modal="true" aria-labelledby="mobile-print-title" onClick={(event) => event.stopPropagation()}><div className="mobile-print-icon" aria-hidden="true">▣</div><h2 id="mobile-print-title">Cetak lewat laptop</h2><p>Sertifikat hanya dapat dibuka dan dicetak melalui laptop atau komputer. Silakan akses dashboard admin dari laptop untuk melanjutkan.</p><button type="button" className="button button-primary" onClick={() => setMobilePrintNotice(false)}>Mengerti</button></section></div>}
     {editing && <div className="photo-modal" role="presentation" onClick={() => !savingEdit && setEditing(null)}><section className="edit-modal" role="dialog" aria-modal="true" aria-label="Edit data pengunjung" onClick={(event) => event.stopPropagation()}><button type="button" className="modal-close" onClick={() => setEditing(null)} aria-label="Tutup" disabled={savingEdit}>×</button><div className="eyebrow">PERBARUI CATATAN</div><h2>Edit Data Pengunjung</h2><form onSubmit={saveEdit}>{[['namaLengkap','Nama Lengkap'],['tempatTanggalLahir','Tempat, Tanggal Lahir'],['jabatan','Jabatan'],['asalInstansi','Asal Instansi']].map(([name,label])=><div className="field" key={name}><label htmlFor={`edit-${name}`}>{label}</label><input id={`edit-${name}`} maxLength={name==='namaLengkap'?120:name==='tempatTanggalLahir'||name==='asalInstansi'?150:100} required value={editValues[name]} onChange={(event)=>setEditValues((current)=>({...current,[name]:event.target.value}))}/></div>)}<div className="field"><label htmlFor="edit-tujuanKunjungan">Tujuan Kunjungan (opsional)</label><textarea id="edit-tujuanKunjungan" rows="3" maxLength="1000" value={editValues.tujuanKunjungan} onChange={(event)=>setEditValues((current)=>({...current,tujuanKunjungan:event.target.value}))}/></div><div className="edit-actions"><button type="button" className="button button-secondary" onClick={()=>setEditing(null)} disabled={savingEdit}>Batal</button><button type="submit" className="button button-primary" disabled={savingEdit}>{savingEdit?'Menyimpan…':'Simpan Perubahan'}</button></div></form></section></div>}
   </section>;
 }

@@ -16,6 +16,11 @@ export default async function handler(req, res) {
     return sendJson(res, 405, { error: 'Metode permintaan tidak didukung.' });
   }
   if (!await requireAdmin(req, res)) return;
+  const userAgent = String(req.headers['user-agent'] || '');
+  const mobileClientHint = req.headers['sec-ch-ua-mobile'] === '?1';
+  if (mobileClientHint || /iPhone|iPod|Android.*Mobile|Windows Phone|IEMobile/i.test(userAgent)) {
+    return sendJson(res, 403, { error: 'Sertifikat hanya dapat dibuka melalui laptop atau komputer.' });
+  }
 
   const asset = String(req.query?.asset || '');
   try {

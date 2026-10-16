@@ -22,3 +22,5 @@
 .visitor-table td.row-actions{display:table-cell;vertical-align:middle;white-space:nowrap}.visitor-table td.row-actions .button{display:inline-flex;vertical-align:middle;margin:2px 5px 2px 0}.visitor-table td.row-actions .button:last-child{margin-right:0}
 
 .button-certificate{min-height:32px;padding:0 10px;border:1px solid #e5d7ad;border-radius:8px;background:#fffaf0;color:#755d1e;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}.button-certificate:hover{background:#f7efd9}
+
+.mobile-print-notice{width:min(100%,390px);padding:30px 24px 24px;border-radius:16px;background:#fff;text-align:center;box-shadow:0 14px 45px rgba(0,0,0,.2)}.mobile-print-icon{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 14px;border-radius:50%;background:#edf5f0;color:var(--green);font-size:25px}.mobile-print-notice h2{margin:0 0 10px;color:var(--ink);font-size:19px}.mobile-print-notice p{margin:0 0 20px;color:var(--muted);font-size:13px;line-height:1.65}.mobile-print-notice .button{min-height:42px;padding:0 24px}
