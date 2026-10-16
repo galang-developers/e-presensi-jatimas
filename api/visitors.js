@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       if (!await requireAdmin(req, res)) return;
       const sql = await ensureSchema(getSql());
-      const rows = await sql`SELECT id, created_at, nama_lengkap, tempat_tanggal_lahir, jabatan, asal_instansi, tujuan_kunjungan FROM visitor_records ORDER BY created_at DESC, id DESC LIMIT 1000`;
+      const rows = await sql`SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS nomor, created_at, nama_lengkap, tempat_tanggal_lahir, jabatan, asal_instansi, tujuan_kunjungan FROM visitor_records ORDER BY created_at DESC, id DESC LIMIT 1000`;
       return sendJson(res, 200, { visitors: rows.map(formatVisit) });
     }
     if (req.method !== 'POST') {
@@ -61,7 +61,10 @@ export default async function handler(req, res) {
     if (rateLimited(ip)) return sendJson(res, 429, { error: 'Terlalu banyak pengiriman. Silakan tunggu sebentar.' });
     const sql = await ensureSchema(getSql());
     const existing = await sql`SELECT id FROM visitor_records WHERE submission_key = ${visitor.submissionKey} LIMIT 1`;
-    if (existing.length) return sendJson(res, 200, { success: true, nomor: String(existing[0].id) });
+    if (existing.length) {
+      const numberRows = await sql`SELECT nomor FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS nomor FROM visitor_records) numbered WHERE id = ${existing[0].id} LIMIT 1`;
+      return sendJson(res, 200, { success: true, nomor: String(numberRows[0]?.nomor || '') });
+    }
     if (!process.env.BLOB_READ_WRITE_TOKEN) throw new Error('BLOB_NOT_CONFIGURED');
 
     let uploadedPath = '';
@@ -74,9 +77,11 @@ export default async function handler(req, res) {
       if (!inserted.length) {
         await del(uploadedPath, { access: 'private' });
         const duplicate = await sql`SELECT id FROM visitor_records WHERE submission_key = ${visitor.submissionKey} LIMIT 1`;
-        return sendJson(res, 200, { success: true, nomor: String(duplicate[0]?.id || '') });
+        const numberRows = duplicate.length ? await sql`SELECT nomor FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS nomor FROM visitor_records) numbered WHERE id = ${duplicate[0].id} LIMIT 1` : [];
+        return sendJson(res, 200, { success: true, nomor: String(numberRows[0]?.nomor || '') });
       }
-      return sendJson(res, 201, { success: true, nomor: String(inserted[0].id) });
+      const numberRows = await sql`SELECT nomor FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS nomor FROM visitor_records) numbered WHERE id = ${inserted[0].id} LIMIT 1`;
+      return sendJson(res, 201, { success: true, nomor: String(numberRows[0]?.nomor || '') });
     } catch (error) {
       if (uploadedPath) {
         try { await del(uploadedPath, { access: 'private' }); } catch { /* keep the original storage error */ }

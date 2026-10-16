@@ -103,7 +103,8 @@ export function formatVisit(row) {
   const part = (type) => parts.find((item) => item.type === type)?.value || '';
   return {
     id: String(row.id),
-    nomor: String(row.id),
+    // Display numbers are dense and are recalculated from current records after deletions.
+    nomor: String(row.nomor ?? row.id),
     hariTanggal: `${part('weekday')}, ${part('day')} ${part('month')} ${part('year')}`,
     jamMasuk: new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(createdAt),
     namaLengkap: row.nama_lengkap,

@@ -122,7 +122,7 @@ function VisitorDashboard({ onLogout }) {
       const result = await response.json().catch(() => ({}));
       if (response.status === 401) return onLogout();
       if (!response.ok) throw new Error(result.error || 'Data belum dapat dihapus.');
-      setVisitors((current) => current.filter((item) => item.id !== visitor.id));
+      await loadVisitors();
     } catch (reason) { setError(reason.message || 'Data belum dapat dihapus.'); }
   }
 

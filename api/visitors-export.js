@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   if (!await requireAdmin(req, res)) return;
   try {
     const sql = await ensureSchema(getSql());
-    const rows = await sql`SELECT id, created_at, nama_lengkap, tempat_tanggal_lahir, jabatan, asal_instansi, tujuan_kunjungan FROM visitor_records ORDER BY created_at ASC, id ASC`;
+    const rows = await sql`SELECT id, ROW_NUMBER() OVER (ORDER BY created_at ASC, id ASC) AS nomor, created_at, nama_lengkap, tempat_tanggal_lahir, jabatan, asal_instansi, tujuan_kunjungan FROM visitor_records ORDER BY created_at ASC, id ASC`;
     const headers = ['Nomor', 'Hari/Tanggal', 'Jam Masuk', 'Nama Lengkap', 'Tempat, Tanggal Lahir', 'Jabatan', 'Asal Instansi', 'Tujuan Kunjungan'];
     const cells = (items) => `<Row>${items.map((value) => `<Cell><Data ss:Type="String">${escapeXml(value)}</Data></Cell>`).join('')}</Row>`;
     const dataRows = rows.map(formatVisit).map((visit) => cells([

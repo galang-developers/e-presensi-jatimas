@@ -14,7 +14,7 @@ Google Sheets, Google Drive, QR Code, dan tanda tangan digital sudah dihapus. Da
 6. Jalankan `npm run dev`. Form tersedia di `http://localhost:5173`; backend lokal berjalan di port 3001. Kedua server memakai database dan Blob yang sama dari environment.
 7. Kirim satu data percobaan, periksa data pada tabel `visitor_records` di Neon, kemudian buka `/admin` dan coba lihat selfie serta unduh Excel. Kolom tempat/tanggal lahir ditambahkan otomatis ke tabel lama saat request berikutnya.
 
-Tabel `visitor_records` dibuat otomatis oleh backend ketika request pertama diterima. Nomor berasal dari kolom `BIGSERIAL` PostgreSQL, jadi unik untuk pengiriman bersamaan. Waktu dibuat oleh database, lalu ditampilkan dalam zona waktu `Asia/Jakarta`.
+Tabel `visitor_records` dibuat otomatis oleh backend ketika request pertama diterima. ID internal PostgreSQL tetap unik dan tidak digunakan ulang. Nomor urut yang ditampilkan dihitung dari catatan yang masih ada berdasarkan waktu masuk, sehingga nomor menjadi rapat kembali setelah penghapusan dan kembali mulai dari 1 ketika semua catatan sudah dihapus. Nomor tampilan dapat berubah setelah penghapusan; gunakan ID internal hanya untuk referensi teknis. Waktu dibuat oleh database, lalu ditampilkan dalam zona waktu `Asia/Jakarta`.
 
 ## Deploy ke Vercel
 
