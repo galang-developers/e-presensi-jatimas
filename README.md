@@ -1,60 +1,54 @@
 # E-Presensi Jati Mas
 
-Buku tamu digital untuk PKBM Jati Mas, dibuat dengan React, Vite, Vercel Functions, server Node/Express untuk lokal, dan Google Sheets API. Frontend hanya mengirim empat isian pengunjung; server membuat nomor tanpa nol di depan, hari/tanggal, serta jam masuk berformat `HH:mm` dalam zona waktu `Asia/Jakarta`.
+Buku tamu digital PKBM Jati Mas. Pengunjung mengisi nama, tempat dan tanggal lahir, jabatan, instansi, tujuan kunjungan, serta selfie melalui kamera atau unggah foto. Pengelola masuk ke `/admin` untuk melihat kunjungan dan mengunduh rekap Excel.
 
-## Persiapan
+Google Sheets, Google Drive, QR Code, dan tanda tangan digital sudah dihapus. Data kunjungan disimpan di PostgreSQL (Neon melalui Vercel Marketplace), sementara foto selfie berada di Vercel Blob dengan akses private. Penyimpanan browser dan filesystem sementara Vercel tidak digunakan sebagai database. Vercel menyediakan integrasi marketplace untuk database Postgres dan Vercel Blob untuk file saat aplikasi berjalan ([Vercel Storage](https://vercel.com/docs/storage), [Vercel Blob private storage](https://vercel.com/docs/vercel-blob/private-storage)).
 
-1. Instal Node.js versi 20 atau lebih baru dari situs resmi Node.js.
-2. Buka terminal pada folder proyek ini, lalu jalankan `npm install`.
-3. Buat Google Cloud Project pada Google Cloud Console.
-4. Aktifkan **Google Sheets API** untuk project tersebut.
-5. Buat Service Account dan buat kunci JSON. Catat nilai `client_email` dan `private_key`; rahasiakan file kunci dan jangan masukkan ke Git.
-6. Buat spreadsheet dengan nama **Database E-Presensi Jati Mas**. Buat worksheet **Buku Tamu** dan isikan header baris pertama tepat dalam urutan berikut:
+## Setup lokal
 
-   `Nomor | Hari/Tanggal | Jam Masuk | Nama Lengkap | Jabatan | Asal Instansi | Tujuan Kunjungan`
+1. Instal Node.js versi 20 atau lebih baru.
+2. Jalankan `npm install` dari folder proyek.
+3. Buat database Neon PostgreSQL melalui Vercel Marketplace atau Neon Console, lalu salin connection string pooled ke `DATABASE_URL`.
+4. Di Vercel, buat Vercel Blob store dengan akses **Private** dan hubungkan ke proyek. Salin `BLOB_READ_WRITE_TOKEN` dari pengaturan Blob untuk pengembangan lokal.
+5. Salin `.env.example` menjadi `.env.local`, isi `DATABASE_URL` dan `BLOB_READ_WRITE_TOKEN`, lalu tentukan `ADMIN_USERNAME`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET`. Buat session secret acak minimal 32 karakter, misalnya dengan `node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"`. Gunakan password unik yang panjang.
+6. Jalankan `npm run dev`. Form tersedia di `http://localhost:5173`; backend lokal berjalan di port 3001. Kedua server memakai database dan Blob yang sama dari environment.
+7. Kirim satu data percobaan, periksa data pada tabel `visitor_records` di Neon, kemudian buka `/admin` dan coba lihat selfie serta unduh Excel. Kolom tempat/tanggal lahir ditambahkan otomatis ke tabel lama saat request berikutnya.
 
-7. Bagikan spreadsheet kepada email Service Account dengan izin **Editor**. Spreadsheet tidak perlu dibuat publik. Ambil ID spreadsheet dari bagian URL di antara `/d/` dan `/edit`.
-8. Salin `.env.example` menjadi `.env.local`, lalu isi:
-
-   ```env
-   GOOGLE_SHEETS_SPREADSHEET_ID=ID_SPREADSHEET
-   GOOGLE_SERVICE_ACCOUNT_EMAIL=service-account@project-id.iam.gserviceaccount.com
-   GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-   GOOGLE_SHEETS_SHEET_NAME=Buku Tamu
-   VITE_APP_URL=http://localhost:5173
-   ```
-
-   Private key boleh disimpan dengan `\n` literal seperti format environment di atas. Hanya variabel `VITE_APP_URL` yang masuk bundle browser; jangan pernah memberi prefix `VITE_` ke credential.
-9. Jalankan `npm run dev`. Perintah ini menyalakan API Node/Express lokal pada port 3001 dan Vite pada port 5173. Vite meneruskan `/api/*` ke API lokal, sehingga formulir dan Google Sheets dapat diuji bersama tanpa Vercel CLI. API lokal membaca credential dari `.env.local` atau `.env` di folder proyek.
-10. Kirim data dari formulir di `http://localhost:5173`, lalu periksa baris baru di worksheet.
+Tabel `visitor_records` dibuat otomatis oleh backend ketika request pertama diterima. Nomor berasal dari kolom `BIGSERIAL` PostgreSQL, jadi unik untuk pengiriman bersamaan. Waktu dibuat oleh database, lalu ditampilkan dalam zona waktu `Asia/Jakarta`.
 
 ## Deploy ke Vercel
 
-11. Push proyek ke repository GitHub. Pastikan `.env.local` dan file kunci Service Account tidak ikut ter-commit.
-12. Di Vercel, import repository sebagai proyek baru. Framework preset **Vite**; build command `npm run build` dan output directory `dist` (keduanya sudah dinyatakan di `vercel.json`).
-13. Tambahkan `GOOGLE_SHEETS_SPREADSHEET_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`, `GOOGLE_SHEETS_SHEET_NAME` dan `VITE_APP_URL` di Project Settings → Environment Variables. Set `VITE_APP_URL` ke URL deployment publik yang benar, misalnya domain produksi Vercel yang diberikan setelah deployment pertama. Redeploy agar QR memakai nilai URL baru.
-14. Deploy. Uji pengiriman di URL produksi dan periksa Google Sheets; sukses di layar hanya diberikan setelah append dan penulisan nomor selesai dikonfirmasi Google Sheets API.
-15. Cetak QR dari panel aplikasi atau gunakan tombol **Unduh QR Code**. Pastikan URL publik sudah benar sebelum mencetak.
+1. Push project ke GitHub, lalu import repository ke Vercel. Build command `npm run build`, output directory `dist`.
+2. Dari tab **Storage** project di Vercel, buat koneksi Neon/Postgres dan buat Blob store dengan akses **Private**. Integrasi akan menambahkan environment variable database dan Blob ke project. Bila nama koneksi database bukan `DATABASE_URL`, backend juga mengenali `POSTGRES_URL` dan `POSTGRES_PRISMA_URL`.
+3. Di **Project Settings → Environment Variables**, isi `ADMIN_USERNAME`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET` untuk Production, Preview, atau Development sesuai kebutuhan. Jangan awali credential dengan `VITE_`; credential tersebut hanya dibaca server.
+4. Deploy atau redeploy setelah environment siap. Uji halaman form dan `/admin` pada domain produksi.
+5. Akun Vercel/Neon, pembuatan Blob store, dan konfigurasi variabel lingkungan harus dilakukan oleh pemilik akun. Data berada di resource database dan Blob yang terhubung, bukan di penyimpanan filesystem sementara fungsi Vercel.
 
-Deployment Vercel, pembuatan Cloud Project, pemberian akses Service Account, dan pengisian credential harus dilakukan oleh pemilik akun. Repository ini tidak berisi credential maupun URL deployment rekaan.
+## Fitur dan keamanan
 
-### Menjalankan hasil build dengan API lokal
+- Endpoint publik hanya menerima kiriman `POST /api/visitors`. Endpoint baca daftar, ekspor, foto, dan login admin terpisah; data dan foto hanya dapat diakses dengan cookie sesi admin yang HttpOnly, Secure di production, dan SameSite Strict.
+- Username, password, dan secret sesi disimpan sebagai environment variables server. Akun admin tidak disimpan dalam tabel database. Untuk mengganti akses admin, ubah variabel Vercel lalu redeploy.
+- Selfie dapat diambil langsung lewat kamera atau dipilih melalui unggah foto, dikecilkan di browser, divalidasi lagi di server, lalu diunggah ke Blob private. Akses kamera memerlukan HTTPS pada deployment (atau localhost saat pengembangan). Endpoint foto memeriksa sesi admin sebelum mengirim file.
+- Ekspor mengunduh file Excel `.xls` berisi Nomor, Hari/Tanggal, Jam Masuk, Nama Lengkap, Tempat/Tanggal Lahir, Jabatan, Asal Instansi, dan Tujuan Kunjungan. Path selfie dan foto tidak disertakan.
+- Rate limit login dan form berjalan best-effort per instance. Untuk pencegahan spam yang konsisten pada trafik besar, tambahkan rate limiter terdistribusi.
+- Tidak ada endpoint untuk menghapus catatan dari dashboard. Untuk pengelolaan retensi dan penghapusan, gunakan console database dan Blob sesuai kebijakan lembaga.
 
-Setelah `npm run build`, jalankan `npm start`. Satu server Node/Express menyajikan file dari `dist` dan endpoint `/api/visitors` pada port 3001. Atur `PORT` jika port itu sedang digunakan. `npm run preview` hanya untuk pratinjau Vite; gunakan `npm start` bila API juga diperlukan. Di Vercel, fungsi serverless tetap menangani `/api/visitors` dan tidak memerlukan server lokal.
+## API
 
-## Format data dan penomoran
-
-Endpoint `POST /api/visitors` hanya menerima `namaLengkap`, `jabatan`, `asalInstansi`, dan `tujuanKunjungan`. Server menolak kolom kosong, karakter kontrol, dan isian yang melebihi batas. Data ditulis dengan `valueInputOption: RAW`, sehingga input diawali `=` tidak dievaluasi sebagai formula. Tidak tersedia endpoint baca spreadsheet.
-
-Untuk menangani permintaan bersamaan, server menambahkan satu baris `PENDING` sekaligus seluruh nilai dengan operasi append Google Sheets. API mengembalikan rentang baris yang dialokasikan; endpoint lalu menulis nomor berdasarkan indeks baris pada sel A di baris yang sama. Nomor dibuat unik untuk append serentak selama baris lama tidak dihapus, diurutkan ulang, atau disisipkan manual saat proses berjalan. Kedua panggilan Sheets bukan transaksi: kegagalan setelah append dapat meninggalkan baris `PENDING` dan endpoint melaporkan gagal; periksa sheet sebelum mengulang kasus tersebut. Untuk jaminan transaksional penuh atau penomoran independen dari perubahan sheet, gunakan database transaksional dengan counter atomik. Setelah penyimpanan, endpoint juga menerapkan latar hijau pada header dan putih pada semua sel data yang terpakai; kegagalan pemformatan tidak membatalkan kunjungan yang telah tersimpan.
-
-Rate limit dan idempotensi di endpoint ini bersifat **best effort per instance**, karena memori fungsi Vercel tidak persisten dan tidak dibagi di antara instance. Untuk melindungi deployment dengan trafik publik dari spam secara konsisten, tambahkan provider koordinasi bersama seperti Redis/Upstash atau proteksi edge. Idempotensi mencegah retry ganda pada instance yang sama selama entri masih tersimpan.
+- `POST /api/visitors`: menerima nama, tempat/tanggal lahir, jabatan, instansi, tujuan (opsional), selfie JPEG, dan kunci idempotensi. Waktu serta nomor dibuat server/database.
+- `GET /api/admin/session`, `POST /api/admin/login`, `POST /api/admin/logout`: status dan sesi admin.
+- `GET /api/visitors`: daftar kunjungan untuk admin yang login.
+- `GET /api/visitor-photo?id=...`: selfie privat untuk admin yang login.
+- `GET /api/visitors-export`: file Excel tanpa selfie.
 
 ## Troubleshooting
 
-- **Layanan penyimpanan belum terkonfigurasi**: pastikan semua credential server diisi dan redeploy fungsi.
-- **Spreadsheet tidak tersedia/tidak dapat diakses**: periksa Spreadsheet ID, nama worksheet `Buku Tamu`, Sheets API aktif, dan spreadsheet dibagikan kepada Service Account sebagai Editor.
-- **Error autentikasi/403**: pastikan email dan private key berasal dari kunci Service Account yang sama. Simpan newline private key sebagai `\n` di environment Vercel.
-- **QR belum tampil**: atur `VITE_APP_URL` ke URL deployment publik, lalu build/deploy ulang.
-- **Aplikasi tampil tetapi pengiriman gagal saat `npm run dev`**: Vite dev server tidak menjalankan Vercel Functions. Gunakan `npx vercel dev` dengan environment lokal terkonfigurasi.
-- **Baris berstatus `PENDING`**: penulisan nomor gagal setelah append; cek konfigurasi/akses Sheets, lalu rapikan baris itu secara manual sebelum pengujian ulang.
+- **Database belum dikonfigurasi**: hubungkan Neon/Postgres dan isi `DATABASE_URL` atau `POSTGRES_URL` pada environment deployment, lalu redeploy.
+- **Database gagal terhubung**: periksa connection string, SSL, dan akses database. Gunakan connection string pooled yang diberikan provider untuk fungsi serverless.
+- **Selfie gagal diunggah/dibuka**: pastikan Blob store sudah dibuat sebagai **Private**, token `BLOB_READ_WRITE_TOKEN` terhubung ke project, dan environment lokal memakai token yang valid.
+- **Login admin belum dikonfigurasi**: isi `ADMIN_USERNAME`, `ADMIN_PASSWORD`, dan `ADMIN_SESSION_SECRET` (minimal 32 karakter), lalu redeploy.
+- **Lupa password**: ganti `ADMIN_PASSWORD` di environment Vercel dan redeploy.
+- **Request foto terlalu besar**: form mengompres foto otomatis. Ambil ulang foto bila perangkat masih menghasilkan file terlalu besar.
+- **`vite` tidak dikenali**: jalankan `npm install` dari folder project.
+
+Dashboard admin menyediakan tombol edit untuk data identitas/kunjungan serta hapus untuk catatan dan selfie terkait. Akses /admin tidak ditautkan pada halaman pengunjung; URL tersebut hanya diketahui pengelola.

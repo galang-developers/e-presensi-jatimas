@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import VisitorForm from './components/VisitorForm.jsx';
 import SuccessMessage from './components/SuccessMessage.jsx';
+import AdminPage from './components/AdminPage.jsx';
 
 export default function App() {
   const [submitted, setSubmitted] = useState(false);
+  if (window.location.pathname.replace(/\/$/, '') === '/admin') return <AdminPage />;
   return (
     <div className="page-shell">
       <header className="site-header">
@@ -22,7 +24,7 @@ export default function App() {
           <div className="main-content">{submitted ? <SuccessMessage onAgain={() => setSubmitted(false)} /> : <VisitorForm onSuccess={() => setSubmitted(true)} />}</div>
         </div>
       </main>
-      <footer><span>© {new Date().getFullYear()} PKBM Jati Mas</span><span>Buku Tamu Digital</span></footer>
+      <footer><span>© {new Date().getFullYear()} PKBM Jati Mas</span></footer>
     </div>
   );
 }
